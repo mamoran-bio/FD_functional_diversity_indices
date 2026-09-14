@@ -195,6 +195,36 @@ while the thesis reports mg g⁻¹ and mm² mg⁻¹. The values are the same qua
 a factor of 1000 apart, but nothing said so. **Documented** in
 `data/README.md`, with the conversion needed to recover each thesis table.
 
+### V12 — Environment freeze and reproduction check (2026-09-14)
+
+`renv.lock` was replaced on 2026-09-11 with a `renv::snapshot()` lockfile
+pinning the full dependency tree under R 4.5.3.
+
+**Reproduction check.** Both `R/figures_reference.R` and the full
+`R/functional_diversity_analysis.R` pipeline — 999 trait-label permutations,
+sensitivity analysis, cross-campaign comparison — run to completion from the
+restored project library in ~4.5 min. `figures/redundancy_values.csv` and
+`figures/taxonomic_values.csv` regenerate byte-for-byte identical to the
+committed versions. Relative functional redundancy matches the V1 table in
+all eight cells (flora and birds, four zones). The PNG files differ in file
+size only — graphics rendering, not content — and were regenerated on
+2026-09-14 so that every artefact in this repository comes from the
+environment recorded in `renv.lock`.
+
+**Open limitation.** `ggplot2` is pinned to 3.5.1. `mFD` is installed in the
+restored library but does not load:
+
+    object 'is_ggplot' is not exported by 'namespace:ggplot2'
+
+`is_ggplot()` was introduced in ggplot2 3.5.2, and `cowplot` and `ggrepel`
+call it. The optional mFD cross-check is therefore unavailable when the
+lockfile is restored as-is; `FD::dbFD` results are unaffected.
+
+Since ggplot2 does not enter any computed value — the numeric outputs come
+from `vegan` and `FD`, and are unchanged — raising the pin to
+ggplot2 >= 3.5.2 would restore the mFD cross-check at no cost to the
+results. Pending.
+
 ---
 
 ## How to re-run the checks

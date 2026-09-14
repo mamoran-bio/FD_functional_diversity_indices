@@ -82,7 +82,7 @@ redundancy figure from this repository without reading that entry first.
 ## Quick start
 
 ```bash
-git clone https://github.com/zacamias/FD_functional_diversity_indices.git
+git clone https://github.com/mamoran-bio/FD_functional_diversity_indices.git
 cd FD_functional_diversity_indices
 
 # Figures and the redundancy / taxonomic analysis (needs only ggplot2, reshape2,
@@ -102,10 +102,21 @@ To restore the exact package versions:
 install.packages("renv")
 renv::restore()
 ```
+> `renv.lock` is a `renv::snapshot()` lockfile: it pins the full dependency
+> tree (~140 packages), not just top-level declarations. Frozen 2026-09-11
+> under R 4.5.3.
 
-> `renv.lock` was authored by hand from the versions reported in the thesis
-> (§2.9). Run `renv::snapshot()` on your own machine to replace it with a
-> hash-verified lockfile — that is the version worth trusting.
+**System dependencies.** `rcdd` and `nloptr` — needed only by the optional
+`mFD` cross-check — require GNU MP and NLopt headers:
+
+```bash
+# R installed from apt
+sudo apt install libgmp-dev libnlopt-cxx-dev cmake
+
+# R installed from conda / miniforge: the conda toolchain does not look in
+# /usr/include, so the libraries must live inside the conda prefix instead
+conda install -c conda-forge gmp nlopt
+```
 
 ## Repository layout
 
